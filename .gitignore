@@ -1,0 +1,14 @@
+build/
+out/
+
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+
+*.ncu-rep
+*.nsys-rep
+
