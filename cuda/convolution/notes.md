@@ -6,6 +6,11 @@
 - `depthwise conv`
 - `im2col + gemm`
 
+## YOLOX Related Operators
+
+- `Conv2d`: used throughout backbone, neck, and head.
+- `Depthwise Conv2d`: used by depthwise variants.
+
 ## Status
 
 - `Not Started`

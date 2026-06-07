@@ -35,6 +35,22 @@ def benchmark(op: str, values: torch.Tensor, warmup: int, repeat: int) -> float:
     return start.elapsed_time(end) / repeat
 
 
+def reduce_operation_count(op: str, numel: int) -> int:
+    if numel <= 1:
+        return 0
+    if op in ("sum", "max", "argmax"):
+        return numel - 1
+    raise ValueError(f"Unsupported op: {op}")
+
+
+def operation_kind(op: str) -> str:
+    if op == "sum":
+        return "flop"
+    if op in ("max", "argmax"):
+        return "compare"
+    raise ValueError(f"Unsupported op: {op}")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--op", default="sum", choices=["sum", "max", "argmax"])
@@ -49,10 +65,16 @@ def main():
     values = make_input(args.numel)
     latency_ms = benchmark(args.op, values, args.warmup, args.repeat)
     bandwidth_gb_s = (args.numel * 4) / (latency_ms * 1.0e6)
+    op_count = reduce_operation_count(args.op, args.numel)
+    gops_s = op_count / (latency_ms * 1.0e6)
+
+    flop_metric = f" gflop_s={gops_s:.4f}" if args.op == "sum" else ""
 
     print(
         f"torch_benchmark op={args.op} numel={args.numel} warmup={args.warmup} "
-        f"repeat={args.repeat} latency_ms={latency_ms:.4f} bandwidth_gb_s={bandwidth_gb_s:.4f}"
+        f"repeat={args.repeat} latency_ms={latency_ms:.4f} bandwidth_gb_s={bandwidth_gb_s:.4f} "
+        f"op_count_kind={operation_kind(args.op)} op_count={op_count} "
+        f"gops_s={gops_s:.4f}{flop_metric}"
     )
 
 

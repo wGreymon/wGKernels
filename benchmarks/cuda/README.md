@@ -27,3 +27,9 @@
 - speedup
 - 计算密集型算子的 `TFLOPS`
 - 访存密集型算子的 `GB/s`
+- 算法操作吞吐 `GOPS`
+
+说明：
+
+- `sum` 的 reduce benchmark 会额外输出 `GFLOP/s`，操作量按 `numel - 1` 次加法估算。
+- `max` 和 `argmax` 的操作量主要是比较操作，因此输出 `GOPS`，不强行记作 `GFLOP/s`。

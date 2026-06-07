@@ -14,6 +14,8 @@
 - `activation_elementwise`
 - `attention`
 - `convolution`
+- `pooling`
+- `resize`
 - `quantization`
 - `transpose_layout_transform`
 - `fused_ops`

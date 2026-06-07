@@ -54,7 +54,9 @@ wGKernel/
 ├── CMakeLists.txt
 ├── cmake/
 ├── include/
+├── cpu/
 ├── cuda/
+├── docs/
 ├── tests/
 ├── benchmarks/
 ├── ncu/
@@ -65,7 +67,9 @@ wGKernel/
 
 - `cmake/`：统一管理 CMake 模块、CUDA 配置与公共构建逻辑
 - `include/`：公共头文件与对外接口声明
+- `cpu/`：CPU 算子实现、优化指南与平台侧学习笔记
 - `cuda/`：CUDA 算子实现与各类别学习笔记
+- `docs/`：跨算子、跨平台的学习问题与专题笔记
 - `tests/`：统一的正确性测试
 - `benchmarks/`：统一的性能 benchmark 与对标策略
 - `ncu/`：Nsight Compute 脚本、指标集合、报告与分析记录

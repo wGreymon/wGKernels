@@ -57,6 +57,26 @@ Options parse_options(const int argc, char** argv) {
     return options;
 }
 
+double reduce_operation_count(const std::string& op, const std::int64_t numel) {
+    if (numel <= 1) {
+        return 0.0;
+    }
+    if (op == "sum" || op == "max" || op == "argmax") {
+        return static_cast<double>(numel - 1);
+    }
+    throw std::runtime_error("Unsupported op: " + op);
+}
+
+const char* operation_kind(const std::string& op) {
+    if (op == "sum") {
+        return "flop";
+    }
+    if (op == "max" || op == "argmax") {
+        return "compare";
+    }
+    throw std::runtime_error("Unsupported op: " + op);
+}
+
 float benchmark_sum(const Options& options, const std::vector<float>& input) {
     float* device_input = nullptr;
     float* device_output = nullptr;
@@ -213,6 +233,8 @@ int main(int argc, char** argv) {
 
         const double bytes = static_cast<double>(options.numel) * sizeof(float);
         const double bandwidth_gb_s = bytes / (static_cast<double>(latency_ms) * 1.0e6);
+        const double operation_count = reduce_operation_count(options.op, options.numel);
+        const double gops_s = operation_count / (static_cast<double>(latency_ms) * 1.0e6);
 
         std::cout << std::fixed << std::setprecision(4)
                   << "benchmark op=" << options.op
@@ -220,7 +242,15 @@ int main(int argc, char** argv) {
                   << " warmup=" << options.warmup
                   << " repeat=" << options.repeat
                   << " latency_ms=" << latency_ms
-                  << " bandwidth_gb_s=" << bandwidth_gb_s << "\n";
+                  << " bandwidth_gb_s=" << bandwidth_gb_s
+                  << " op_count_kind=" << operation_kind(options.op)
+                  << " op_count=" << std::setprecision(0) << operation_count
+                  << std::setprecision(4)
+                  << " gops_s=" << gops_s;
+        if (options.op == "sum") {
+            std::cout << " gflop_s=" << gops_s;
+        }
+        std::cout << "\n";
         return 0;
     } catch (const std::exception& error) {
         std::cerr << error.what() << "\n";

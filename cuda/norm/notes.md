@@ -5,6 +5,11 @@
 - `layernorm`
 - `rmsnorm`
 - `groupnorm`
+- `batchnorm2d`
+
+## YOLOX Related Operators
+
+- `BatchNorm2d`: used after convolution blocks; inference mode can be implemented as per-channel affine transform.
 
 ## Status
 
