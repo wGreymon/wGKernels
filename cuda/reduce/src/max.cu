@@ -1,4 +1,4 @@
-#include "wgkernel/cuda/reduce.hpp"
+#include "cuda/reduce.hpp"
 
 #include "reduce_utils.cuh"
 

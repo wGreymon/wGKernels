@@ -1,4 +1,4 @@
-#include "wgkernel/cuda/pooling.hpp"
+#include "cuda/pooling.hpp"
 
 #include <cuda_runtime.h>
 

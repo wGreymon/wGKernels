@@ -1,4 +1,4 @@
-#include "wgkernel/cuda/activation_elementwise.hpp"
+#include "cuda/activation_elementwise.hpp"
 
 #include <cuda_runtime.h>
 

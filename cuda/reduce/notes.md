@@ -26,7 +26,7 @@
 ## Notes
 
 - Current implementation targets 1D `float32` reduction on CUDA.
-- Host API is exposed via `include/wgkernel/cuda/reduce.hpp`.
+- Host API is exposed via `include/cuda/reduce.hpp`.
 - Each concrete operator has its own implementation file:
   - `cuda/reduce/src/sum.cu`
   - `cuda/reduce/src/max.cu`

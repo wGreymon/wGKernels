@@ -1,4 +1,4 @@
-#include "wgkernel/cuda/norm.hpp"
+#include "cuda/norm.hpp"
 
 #include <cuda_runtime.h>
 

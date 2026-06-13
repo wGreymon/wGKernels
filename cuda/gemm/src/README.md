@@ -13,5 +13,5 @@
 原则：
 
 - 按具体算子组织源码，不单独建立 `tensor_core/` 根目录。
-- Tensor Core 作为 GEMM 的实现技术路线体现在文件名和 notes 中。
+- Tensor Core 作为 GEMM 的实现技术路线体现在文件名和 `cuda/cuda_ops.md` 的计划中。
 - 每个文件内可以包含多个逐步优化版本，保持 kernel 代码聚焦、可读。

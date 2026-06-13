@@ -1,4 +1,4 @@
-#include "wgkernel/cuda/transpose_layout_transform.hpp"
+#include "cuda/transpose_layout_transform.hpp"
 
 #include <cuda_runtime.h>
 

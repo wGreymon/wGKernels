@@ -1,4 +1,4 @@
-#include "wgkernel/cuda/embedding_indexing.hpp"
+#include "cuda/embedding_indexing.hpp"
 
 #include <cuda_runtime.h>
 

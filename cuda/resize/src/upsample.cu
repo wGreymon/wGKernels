@@ -1,4 +1,4 @@
-#include "wgkernel/cuda/resize.hpp"
+#include "cuda/resize.hpp"
 
 #include <cuda_runtime.h>
 

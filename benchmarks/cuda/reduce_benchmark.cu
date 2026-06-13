@@ -1,5 +1,5 @@
 #include "wgkernel/cuda/error_check.hpp"
-#include "wgkernel/cuda/reduce.hpp"
+#include "cuda/reduce.hpp"
 #include "wgkernel/cuda/timer.hpp"
 
 #include <cuda_runtime.h>
