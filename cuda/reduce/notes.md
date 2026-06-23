@@ -36,8 +36,7 @@
 - `sum` and `max` currently default to `v2` shuffle-based kernels.
 - `argmax` currently uses the `v1` shared-memory block reduction path.
 - Current benchmark and correctness entry points:
-  - `./build/tests/correctness/cuda/wgkernel_reduce_tool`
-  - `ctest --test-dir build --output-on-failure`
+  - `PYTHONPATH=build/python python3 tests/cuda/test_reduce/scripts/test_reduce_vs_pytorch.py`
   - `./build/benchmarks/cuda/wgkernel_reduce_benchmark --op sum --numel 16777216 --warmup 10 --repeat 100`
   - `python3 benchmarks/cuda/bench_reduce_torch.py --op sum --numel 16777216 --warmup 10 --repeat 100`
 

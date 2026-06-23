@@ -8,9 +8,9 @@ if [[ $# -lt 1 ]]; then
     echo "environment overrides:"
     echo "  WGKERNEL_NCU_SET=basic|detailed|full|roofline"
     echo "  WGKERNEL_NCU_KERNEL='regex:reduce_sum_v2_kernel'"
-    echo "  WGKERNEL_NCU_LAUNCH_SKIP=10"
+    echo "  WGKERNEL_NCU_LAUNCH_SKIP=20"
     echo "  WGKERNEL_NCU_LAUNCH_COUNT=1"
-    echo "  WGKERNEL_NCU_EXPORT=ncu/reports/reduce_sum_v2_basic"
+    echo "  WGKERNEL_NCU_EXPORT=tests/cuda/test_reduce/profiling/reduce_sum_basic"
     exit 1
 fi
 
@@ -22,7 +22,7 @@ ncu_args=(
     --kernel-name-base demangled
     --target-processes all
     --kernel-name "${WGKERNEL_NCU_KERNEL:-regex:reduce_.*kernel}"
-    --launch-skip "${WGKERNEL_NCU_LAUNCH_SKIP:-10}"
+    --launch-skip "${WGKERNEL_NCU_LAUNCH_SKIP:-20}"
     --launch-count "${WGKERNEL_NCU_LAUNCH_COUNT:-1}"
 )
 

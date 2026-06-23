@@ -71,10 +71,11 @@
 
 | 测试文件 | 覆盖算子 | 状态 |
 | --- | --- | --- |
-| `tests/correctness/cuda/test_reduce_vs_pytorch.py` | `sum`、`max`、`argmax` | `Done` |
-| `tests/correctness/cuda/test_yolox_ops_vs_pytorch.py` | Conv2d、BatchNorm2d、SiLU、MaxPool2d、Upsample、Concat | `Planned` |
-| `tests/correctness/cuda/test_activation_vs_pytorch.py` | SiLU、Sigmoid、Exp、Add、Sub、Mul | `Planned` |
-| `tests/correctness/cuda/test_transform_vs_pytorch.py` | Concat、Permute、Slice、Gather | `Planned` |
+| `tests/cuda/test_reduce/test_reduce_vs_pytorch.py` | `sum`、`max`、`argmax` | `Done` |
+| `tests/cuda/test_conv2d/test_conv2d_vs_pytorch.py` | Conv2d | `Done` |
+| `tests/cuda/test_yolox_ops/test_yolox_ops_vs_pytorch.py` | BatchNorm2d、SiLU、MaxPool2d、Upsample、Concat | `Planned` |
+| `tests/cuda/test_activation/test_activation_vs_pytorch.py` | SiLU、Sigmoid、Exp、Add、Sub、Mul | `Planned` |
+| `tests/cuda/test_transform/test_transform_vs_pytorch.py` | Concat、Permute、Slice、Gather | `Planned` |
 
 ## Benchmark 计划
 

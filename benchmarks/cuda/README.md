@@ -33,3 +33,12 @@
 
 - `sum` 的 reduce benchmark 会额外输出 `GFLOP/s`，操作量按 `numel - 1` 次加法估算。
 - `max` 和 `argmax` 的操作量主要是比较操作，因此输出 `GOPS`，不强行记作 `GFLOP/s`。
+
+当前文件：
+
+- `reduce_benchmark.cu`：wGKernel reduce benchmark / NCU driver。
+- `bench_reduce_torch.py`：PyTorch reduce 参考 benchmark。
+
+后续计划：
+
+- `conv2d_benchmark.cu`：wGKernel conv2d benchmark / NCU driver。

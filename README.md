@@ -104,10 +104,16 @@ cmake --build build -j
 
 常用选项：
 
-- `-DWGKERNEL_BUILD_TESTS=ON/OFF`
 - `-DWGKERNEL_BUILD_BENCHMARKS=ON/OFF`
 - `-DWGKERNEL_ENABLE_CUDA=ON/OFF`
 - `-DCMAKE_CUDA_ARCHITECTURES=native`
+
+测试脚本直接通过 Python 运行，例如：
+
+```bash
+PYTHONPATH=build/python python3 tests/cuda/test_reduce/scripts/test_reduce_vs_pytorch.py
+PYTHONPATH=build/python python3 tests/cuda/test_conv2d/scripts/test_conv2d_vs_pytorch.py
+```
 
 ## 当前实现进度
 

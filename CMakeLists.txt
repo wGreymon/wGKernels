@@ -20,7 +20,6 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Build type" FORCE)
 endif()
 
-option(WGKERNEL_BUILD_TESTS "Build correctness tests" ON)
 option(WGKERNEL_BUILD_BENCHMARKS "Build benchmark targets" ON)
 option(WGKERNEL_ENABLE_CUDA "Enable CUDA kernels and CUDA-specific targets" ON)
 
@@ -31,11 +30,7 @@ if(WGKERNEL_ENABLE_CUDA)
     enable_language(CUDA)
     wgkernel_configure_cuda()
     add_subdirectory(cuda)
-endif()
-
-if(WGKERNEL_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(tests)
+    add_subdirectory(python)
 endif()
 
 if(WGKERNEL_BUILD_BENCHMARKS)
