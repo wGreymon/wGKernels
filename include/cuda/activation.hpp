@@ -1,0 +1,13 @@
+#pragma once
+
+#include <cuda_runtime.h>
+
+#include <cstdint>
+
+namespace wgkernel::cuda {
+
+cudaError_t silu(const float* input, float* output, std::int64_t numel, cudaStream_t stream = nullptr);
+cudaError_t sigmoid(const float* input, float* output, std::int64_t numel, cudaStream_t stream = nullptr);
+cudaError_t exp(const float* input, float* output, std::int64_t numel, cudaStream_t stream = nullptr);
+
+}  // namespace wgkernel::cuda

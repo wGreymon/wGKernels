@@ -26,12 +26,12 @@
 | 类别 | 目录 | 当前状态 | 正确性参考 | 性能对标 | 下一步 |
 | --- | --- | --- | --- | --- | --- |
 | `reduce` | `cuda/reduce/` | `Benchmark Ready` | PyTorch | PyTorch | 补 row-wise reduce、softmax、logsumexp |
-| `activation / elementwise` | `cuda/activation_elementwise/` | `Naive Implemented` | PyTorch | PyTorch | 补 correctness test 和 benchmark |
+| `activation` | `cuda/activation/` | `Naive Implemented` | PyTorch | PyTorch | 补 correctness test 和 benchmark |
+| `elementwise` | `cuda/elementwise/` | `Naive Implemented` | PyTorch | PyTorch | 补 correctness test 和 benchmark |
 | `convolution` | `cuda/convolution/` | `Naive Implemented` | PyTorch `conv2d` | cuDNN | 优先补 Conv2d correctness test |
 | `norm` | `cuda/norm/` | `Naive Implemented` | PyTorch | PyTorch | 补 BatchNorm2d inference correctness test |
 | `pooling` | `cuda/pooling/` | `Naive Implemented` | PyTorch | PyTorch / cuDNN | 补 MaxPool2d correctness test |
-| `resize` | `cuda/resize/` | `Naive Implemented` | PyTorch | PyTorch | 补 nearest/bilinear correctness test |
-| `transpose / layout transform` | `cuda/transpose_layout_transform/` | `Naive Implemented` | PyTorch | effective bandwidth | 补 concat、permute correctness test |
+| `layout` | `cuda/layout/` | `Naive Implemented` | PyTorch | effective bandwidth | 补 concat、permute correctness test |
 | `embedding / indexing` | `cuda/embedding_indexing/` | `Naive Implemented` | PyTorch | PyTorch | 补 slice、gather、topk、sort correctness test |
 | `gemm / matmul` | `cuda/gemm/` | `Planned` | PyTorch / cuBLAS | cuBLAS / cuBLASLt | 实现 CUDA Core SGEMM baseline |
 | `gemv` | `cuda/gemv/` | `Planned` | PyTorch | cuBLAS | 实现 SGEMV baseline |
@@ -46,15 +46,14 @@
 | --- | --- | --- | --- |
 | `Conv2d` | `cuda/convolution/` | `conv2d_nchw` | 支持 bias、stride、padding、dilation、groups |
 | `BatchNorm2d` | `cuda/norm/` | `batchnorm2d_inference_nchw` | 推理态 per-channel affine |
-| `SiLU / Swish` | `cuda/activation_elementwise/` | `silu` | unary elementwise |
-| `Sigmoid` | `cuda/activation_elementwise/` | `sigmoid` | unary elementwise |
-| `Exp` | `cuda/activation_elementwise/` | `exp` | bbox decode 相关 |
-| `Add / Sub / Mul` | `cuda/activation_elementwise/` | `add / sub / mul` | binary elementwise |
+| `SiLU / Swish` | `cuda/activation/` | `silu` | unary elementwise |
+| `Sigmoid` | `cuda/activation/` | `sigmoid` | unary elementwise |
+| `Exp` | `cuda/activation/` | `exp` | bbox decode 相关 |
+| `Add / Sub / Mul` | `cuda/elementwise/` | `add / sub / mul` | binary elementwise |
 | `MaxPool2d` | `cuda/pooling/` | `maxpool2d_nchw` | SPP 模块 |
-| `Upsample` | `cuda/resize/` | `upsample_nearest2d_nchw`、`upsample_bilinear2d_nchw` | FPN 自顶向下路径 |
-| `Concat` | `cuda/transpose_layout_transform/` | `concat_nchw_axis1` | 当前支持 NCHW channel 维拼接 |
-| `Reshape / View` | `cuda/transpose_layout_transform/` | `copy_1d` | view 通常是 metadata，不一定需要 kernel |
-| `Permute` | `cuda/transpose_layout_transform/` | `permute_nchw_to_nhwc`、`permute_nhwc_to_nchw` | 先覆盖 NCHW/NHWC |
+| `Concat` | `cuda/layout/` | `concat_nchw_axis1` | 当前支持 NCHW channel 维拼接 |
+| `Reshape / View` | `cuda/layout/` | `copy_1d` | view 通常是 metadata，不一定需要 kernel |
+| `Permute` | `cuda/layout/` | `permute_nchw_to_nhwc`、`permute_nhwc_to_nchw` | 先覆盖 NCHW/NHWC |
 | `Slice / Strided Slice` | `cuda/embedding_indexing/` | `slice_1d` | 当前是 1D baseline |
 | `Gather` | `cuda/embedding_indexing/` | `gather_1d` | 当前是 1D baseline |
 | `TopK / Sort` | `cuda/embedding_indexing/` | `topk_1d`、`sort_1d` | 当前是单线程 naive baseline |
@@ -62,29 +61,31 @@
 ## 短期优先级
 
 1. 为 YOLOX naive 算子补正确性测试，对齐 PyTorch。
-2. 优先测试 `Conv2d -> BatchNorm2d -> SiLU -> MaxPool2d -> Upsample -> Concat`。
+2. 优先测试 `Conv2d -> BatchNorm2d -> SiLU -> MaxPool2d -> Concat`。
 3. 为每个算子补最小 benchmark，输出 `latency`、`GB/s`、`GOPS/GFLOP/s`。
 4. 优先优化 `Conv2d`，因为它是 YOLOX 主要性能热点。
-5. 再优化 `MaxPool2d`、`Upsample`、`Concat` 等视觉模型常见 memory-bound 算子。
+5. 再优化 `MaxPool2d`、`Concat` 等视觉模型常见 memory-bound 算子。
 
 ## 正确性测试计划
 
 | 测试文件 | 覆盖算子 | 状态 |
 | --- | --- | --- |
-| `tests/cuda/test_reduce/test_reduce_vs_pytorch.py` | `sum`、`max`、`argmax` | `Done` |
-| `tests/cuda/test_conv2d/test_conv2d_vs_pytorch.py` | Conv2d | `Done` |
-| `tests/cuda/test_yolox_ops/test_yolox_ops_vs_pytorch.py` | BatchNorm2d、SiLU、MaxPool2d、Upsample、Concat | `Planned` |
-| `tests/cuda/test_activation/test_activation_vs_pytorch.py` | SiLU、Sigmoid、Exp、Add、Sub、Mul | `Planned` |
-| `tests/cuda/test_transform/test_transform_vs_pytorch.py` | Concat、Permute、Slice、Gather | `Planned` |
+| `tests/test_reduce/scripts/test_reduce.py` | `sum`、`max`、`argmax` | `Done` |
+| `tests/test_conv2d/scripts/test_conv2d.py` | Conv2d | `Done` |
+| `tests/test_yolox_ops/test_yolox_ops.py` | BatchNorm2d、SiLU、MaxPool2d、Concat | `Planned` |
+| `tests/test_activation/test_activation.py` | SiLU、Sigmoid、Exp | `Planned` |
+| `tests/test_elementwise/test_elementwise.py` | Add、Sub、Mul | `Planned` |
+| `tests/test_transform/test_transform.py` | Concat、Permute、Slice、Gather | `Planned` |
 
 ## Benchmark 计划
 
 | benchmark | 覆盖算子 | 对标 |
 | --- | --- | --- |
 | `benchmarks/cuda/reduce_benchmark.cu` | reduce | PyTorch |
-| `benchmarks/cuda/yolox_ops_benchmark.cu` | Conv2d、BN、SiLU、MaxPool、Upsample、Concat | PyTorch / cuDNN |
+| `benchmarks/cuda/yolox_ops_benchmark.cu` | Conv2d、BN、SiLU、MaxPool、Concat | PyTorch / cuDNN |
 | `benchmarks/cuda/conv2d_benchmark.cu` | Conv2d | cuDNN |
-| `benchmarks/cuda/activation_benchmark.cu` | unary/binary elementwise | PyTorch |
+| `benchmarks/cuda/activation_benchmark.cu` | unary activation | PyTorch |
+| `benchmarks/cuda/elementwise_benchmark.cu` | binary elementwise | PyTorch |
 | `benchmarks/cuda/transform_benchmark.cu` | concat、permute、copy | effective bandwidth |
 
 ## 优化路线

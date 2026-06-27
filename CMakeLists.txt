@@ -21,17 +21,23 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 option(WGKERNEL_BUILD_BENCHMARKS "Build benchmark targets" ON)
+option(WGKERNEL_ENABLE_CPU "Enable CPU baseline kernels and CPU-specific targets" ON)
 option(WGKERNEL_ENABLE_CUDA "Enable CUDA kernels and CUDA-specific targets" ON)
 
 add_library(wgkernel_project_options INTERFACE)
 wgkernel_enable_warnings(wgkernel_project_options)
 
+if(WGKERNEL_ENABLE_CPU)
+    add_subdirectory(cpu)
+endif()
+
 if(WGKERNEL_ENABLE_CUDA)
     enable_language(CUDA)
     wgkernel_configure_cuda()
     add_subdirectory(cuda)
-    add_subdirectory(python)
 endif()
+
+add_subdirectory(python)
 
 if(WGKERNEL_BUILD_BENCHMARKS)
     add_subdirectory(benchmarks)

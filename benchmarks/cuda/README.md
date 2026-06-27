@@ -8,11 +8,12 @@
 | `reduce` | `PyTorch` |
 | `norm` | `PyTorch` |
 | `embedding / indexing` | `PyTorch` |
-| `activation / elementwise` | `PyTorch` |
+| `activation` | `PyTorch` |
+| `elementwise` | `PyTorch` |
 | `attention` | `FlashAttention` |
 | `convolution` | `cuDNN` |
 | `quantization` | `cuBLASLt / CUTLASS` |
-| `transpose / layout transform` | `effective bandwidth ceiling` |
+| `layout` | `effective bandwidth ceiling` |
 | `fused ops` | `PyTorch / fused reference implementation` |
 
 建议 benchmark 输出至少包含：

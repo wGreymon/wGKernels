@@ -1,40 +1,38 @@
-# CPU Optimization Guide
+# CPU Baseline Guide
 
-`cpu/` 目录用于记录 CPU 侧高性能算子的实现、优化方法与实验结论。
+`cpu/` 目录用于实现 CPU 侧朴素算子、记录参考行为与实验结论。
 
-当前阶段先作为 CPU 优化指南的占位入口，后续会逐步补充具体算子实现、benchmark、profiling 与优化笔记。
+CPU 后端只保留朴素实现，用作 CUDA、CUTLASS、SIMD 等后端的正确性基线。
+
+指令集加速实现单独放在 `simd/`，不混在 `cpu/` 目录中。
 
 ## 目标
 
 - 系统掌握 CPU 高性能算子的常见优化手段
-- 为 CUDA 算子提供 CPU baseline 和参考实现
-- 积累 SIMD、多线程、cache 优化、NUMA 等工程经验
+- 为 CUDA / CUTLASS 算子提供 CPU baseline 和参考实现
+- 为后续 SIMD、多线程、cache 优化提供可信 reference
 - 形成可用于面试复盘的 CPU 优化知识库
 
-## 优化方向
+## 关注方向
 
 后续计划围绕以下主题展开：
 
 | 方向 | 关键词 | 适用算子 |
 | --- | --- | --- |
-| SIMD 向量化 | `SSE`、`AVX2`、`AVX-512`、intrinsics | `activation`、`reduce`、`norm`、`gemv` |
-| Cache 优化 | blocking、tiling、cache locality | `gemm`、`conv`、`attention` |
-| 多线程并行 | OpenMP、thread pool、work partition | `gemm`、`reduce`、`norm` |
-| 内存布局 | contiguous、alignment、packing | `gemm`、`conv`、`embedding` |
-| 循环优化 | unroll、software pipeline、branch reduction | elementwise、reduce |
-| 预取 | software prefetch、streaming load/store | `embedding`、`gemv` |
-| NUMA 优化 | thread affinity、first touch | 大规模矩阵计算 |
-| 算子融合 | fusion、减少中间结果读写 | `bias+activation`、`residual+norm` |
+| 标量 baseline | scalar loop、clear semantics | 所有算子 |
+| 数值行为 | tie-break、rounding、edge cases | `reduce`、`norm`、`softmax` |
+| 参考实现 | correctness reference、debug oracle | 所有算子 |
 
 ## 推荐学习顺序
 
-1. `activation / elementwise`
-2. `reduce`
-3. `norm`
-4. `gemv`
-5. `gemm`
-6. `convolution`
-7. `attention`
+1. `activation`
+2. `elementwise`
+3. `reduce`
+4. `norm`
+5. `gemv`
+6. `gemm`
+7. `convolution`
+8. `attention`
 
 ## 每个算子的记录模板
 
@@ -44,13 +42,12 @@
 Operator:
 Input shape:
 Dtype:
-Baseline:
-Optimized version:
+CPU baseline:
 Correctness reference:
 Benchmark command:
 Latency:
 Throughput:
-Optimization notes:
+Behavior notes:
 Next step:
 ```
 
@@ -66,4 +63,5 @@ Next step:
 
 ## 当前状态
 
-- `Not Started`
+- 已建立算子目录骨架。
+- 下一步建议继续补齐 `cpu/reduce` 的更多 baseline 场景，并按同样方式扩展其他算子。

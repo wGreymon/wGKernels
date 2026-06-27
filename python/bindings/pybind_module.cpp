@@ -3,13 +3,13 @@
 #include <pybind11/stl.h>
 
 #include "cuda/reduce.hpp"
-#include "cuda/activation_elementwise.hpp"
+#include "cuda/activation.hpp"
+#include "cuda/elementwise.hpp"
 #include "cuda/embedding_indexing.hpp"
-#include "cuda/transpose_layout_transform.hpp"
+#include "cuda/layout.hpp"
 #include "cuda/norm.hpp"
 #include "cuda/convolution.hpp"
 #include "cuda/pooling.hpp"
-#include "cuda/resize.hpp"
 
 #include <cuda_runtime.h>
 
@@ -1048,55 +1048,6 @@ py::array_t<float> py_maxpool2d_nchw(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Resize
-// ─────────────────────────────────────────────────────────────────────────────
-
-py::array_t<float> py_upsample_nearest2d_nchw(
-    py::array_t<float> input, int n, int c, int h_in, int w_in, int h_out, int w_out) {
-    auto h_input = require_contiguous_float32(input);
-    const std::size_t total = static_cast<std::size_t>(n) * c * h_out * w_out;
-    py::array_t<float> output(total);
-
-    float* d_in = nullptr;
-    float* d_out = static_cast<float*>(output.request().ptr);
-    const std::size_t in_size = static_cast<std::size_t>(n) * c * h_in * w_in;
-
-    auto err = cudaMalloc(&d_in, in_size * sizeof(float));
-    if (err != cudaSuccess) throw std::runtime_error("cudaMalloc d_in failed");
-
-    host_to_device(static_cast<float*>(h_input.request().ptr), d_in, in_size);
-    wgkernel::cuda::upsample_nearest2d_nchw(d_in, d_out, n, c, h_in, w_in, h_out, w_out);
-    cudaDeviceSynchronize();
-    device_to_host(d_out, static_cast<float*>(output.request().ptr), total);
-
-    cudaFree(d_in);
-    return output;
-}
-
-py::array_t<float> py_upsample_bilinear2d_nchw(
-    py::array_t<float> input, int n, int c, int h_in, int w_in, int h_out, int w_out,
-    bool align_corners) {
-    auto h_input = require_contiguous_float32(input);
-    const std::size_t total = static_cast<std::size_t>(n) * c * h_out * w_out;
-    py::array_t<float> output(total);
-
-    float* d_in = nullptr;
-    float* d_out = static_cast<float*>(output.request().ptr);
-    const std::size_t in_size = static_cast<std::size_t>(n) * c * h_in * w_in;
-
-    auto err = cudaMalloc(&d_in, in_size * sizeof(float));
-    if (err != cudaSuccess) throw std::runtime_error("cudaMalloc d_in failed");
-
-    host_to_device(static_cast<float*>(h_input.request().ptr), d_in, in_size);
-    wgkernel::cuda::upsample_bilinear2d_nchw(d_in, d_out, n, c, h_in, w_in, h_out, w_out, align_corners);
-    cudaDeviceSynchronize();
-    device_to_host(d_out, static_cast<float*>(output.request().ptr), total);
-
-    cudaFree(d_in);
-    return output;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 // Module entry point
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -1287,8 +1238,4 @@ PYBIND11_MODULE(wgkernel_cuda, m) {
 
     // Pooling
     m.def("maxpool2d_nchw", &py_maxpool2d_nchw, py::return_value_policy::move, "MaxPool2d NCHW");
-
-    // Resize
-    m.def("upsample_nearest2d_nchw", &py_upsample_nearest2d_nchw, py::return_value_policy::move, "Upsample nearest 2D NCHW");
-    m.def("upsample_bilinear2d_nchw", &py_upsample_bilinear2d_nchw, py::return_value_policy::move, "Upsample bilinear 2D NCHW");
 }
